@@ -100,6 +100,7 @@ p{margin:0;text-wrap:pretty}
 .rules .tl.past{text-decoration:line-through;text-decoration-color:rgba(169,188,219,.7);color:rgba(169,188,219,.55)}
 .rules .r.after{opacity:.45}
 .rules .tl.after{color:rgba(169,188,219,.6);font-style:italic}
+.rules .tl.req{color:var(--ink-text);font-style:italic;text-decoration:underline dashed;text-decoration-color:var(--ink-soft);text-underline-offset:3px}
 .rules .tl.day{font-weight:700;color:var(--ink-text);letter-spacing:.08em;text-transform:uppercase;font-size:11px}
 .now{position:absolute;left:0;height:0;pointer-events:none;z-index:2}
 .now .chip{position:absolute;left:6px;top:-11px;background:var(--red);color:#fff;font-size:11px;font-weight:700;letter-spacing:.04em;padding:3px 7px;white-space:nowrap}
@@ -364,7 +365,7 @@ p{margin:0;text-wrap:pretty}
         <span class="ln a" style="--l:0"><span>Pencil</span></span>
         <span class="ln b" style="--l:1"><span>yourself in.</span></span>
       </h1>
-      <p class="lede">Cuts, colour, keratin and perms for <strong>women, men and kids</strong>, by Tien Truong at 3T Magic, 57&nbsp;Humffray&nbsp;St&nbsp;North, Bakery Hill.</p>
+      <p class="lede">Cuts, colour, keratin and perms for <strong>women, men and kids</strong>, by Tien Truong at 3T&nbsp;Magic, 57&nbsp;Humffray&nbsp;St&nbsp;North, Bakery Hill.</p>
       <div class="ctas">
         <a class="btn btn-light" href="#book">Book a time <i class="ph ph-arrow-right arrow" aria-hidden="true"></i></a>
         <a class="btn btn-line num" href="tel:+61431899877"><i class="ph ph-phone" aria-hidden="true"></i>Call 0431 899 877</a>
@@ -674,8 +675,8 @@ p{margin:0;text-wrap:pretty}
       var lastJ=0;
       html+='<span class="tl day" style="top:0;--i:0">'+DAYS[pageDow].slice(0,3)+'</span>';
       for(var j=1;j<n-1;j++){var m=page[0]+(j-1)*30;if(m>page[1])break;
-        var past=showNow&&(m+30)<=now.min;
-        html+='<span class="tl num'+(past?' past':'')+'" style="top:'+(j*row)+'px;--i:'+j+'">'+(m===page[1]?'Close':t12(m,true))+'</span>';lastJ=j;}
+        var past=showNow&&(m+30)<=now.min;var rq=reqTarget();var isReq=rq&&rq.dow===pageDow&&rq.min===m&&rq.i<7;
+        html+='<span class="tl num'+(past?' past':'')+(isReq?' req':'')+'" style="top:'+(j*row)+'px;--i:'+j+'">'+(m===page[1]?'Close':t12(m,true))+'</span>';lastJ=j;}
       if(lastJ+1<n-1) html+='<span class="tl after" style="top:'+((lastJ+1)*row)+'px;--i:'+(lastJ+1)+'">After</span>';
     }
     container.innerHTML=html;
@@ -703,11 +704,12 @@ p{margin:0;text-wrap:pretty}
   setInterval(function(){now=mel();placeNow()},60000);
 
   /* ---------- hero pencil: the next time you could request ---------- */
-  var pTarget=(function(){
+  var pTarget=reqTarget();
+  function reqTarget(){
     for(var i=0;i<8;i++){var dw=(now.dow+i)%7,h=HOURS[dw];if(!h)continue;
       var m=h[0];if(i===0){if(now.min>=h[1]-60)continue;m=Math.max(h[0],Math.ceil((now.min+60)/30)*30);}
       return {i:i,dow:dw,min:m};}
-  })();
+  }
   if(pTarget){document.getElementById('pencilWhen').textContent=(pTarget.i===0?'Today':pTarget.i===1?'Tomorrow':DAYS[pTarget.dow])+' '+t12(pTarget.min);}
 
   /* ---------- menu image follows the section in view ---------- */
